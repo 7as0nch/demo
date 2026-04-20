@@ -1,0 +1,24 @@
+{
+  "task": "修复 backend/helloworld/web 启动时 openapi 页面构建失败的问题",
+  "affected_area": [
+    "backend/helloworld/web/package.json",
+    "backend/helloworld/web/config/config.ts",
+    "backend/helloworld/web/src/.umi/plugin-openapi/openapi.tsx"
+  ],
+  "current_behavior": "开发服务器启动时，.umi/plugin-openapi/openapi.tsx 无法解析 swagger-ui-dist 和其样式文件，导致构建中断。",
+  "expected_behavior": "开发服务器能够正常解析 openapi 页面依赖，项目可继续构建并访问 /umi/plugin/openapi。",
+  "stack": [
+    "React",
+    "Umi Max",
+    "pnpm"
+  ],
+  "similar_implementation": [
+    "backend/helloworld/web/config/config.ts 中启用了 openAPI 配置",
+    "backend/helloworld/web/src/app.tsx 中开发环境菜单直接链接到 /umi/plugin/openapi"
+  ],
+  "tests": [
+    "在 backend/helloworld/web 下执行 pnpm install --offline",
+    "在 backend/helloworld/web 下执行 pnpm build"
+  ],
+  "observation_summary": "swagger-ui-dist 已存在于 pnpm-lock.yaml 中，并且可通过 pnpm why 查到是 openapi 插件的间接依赖，但当前项目 package.json 未显式声明该包，导致生成代码直接 import 时无法稳定解析。"
+}
