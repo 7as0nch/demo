@@ -1,10 +1,8 @@
 # Testing
 
-- 已执行：`pnpm install --offline`
- 结果：失败。原因是当前终端无 TTY，`pnpm` 拒绝直接移除并重建 `node_modules`。
-- 已执行：`CI=true pnpm install --offline --no-frozen-lockfile`
- 结果：失败。本地 store 缺少 tarball，无法纯离线补齐依赖。
-- 已执行：`CI=true pnpm install --no-frozen-lockfile`
- 结果：成功。`swagger-ui-dist` 已安装到 `backend/helloworld/web/node_modules`。
-- 已执行：`pnpm build`
- 结果：成功。构建产物生成，未再出现 `Can't resolve 'swagger-ui-dist'` 报错。
+- 已执行：`go mod tidy`
+ 结果：首次失败。默认缓存目录无权限且沙箱网络受限。
+- 已执行：`GOCACHE=D:\workspace\goproject\my\demo\.gocache GOMODCACHE=D:\workspace\goproject\my\demo\.gomodcache go mod tidy`
+ 结果：成功。已下载 `github.com/lib/pq` 并更新 `backend/helloworld/go.sum`。
+- 已执行：`GOCACHE=D:\workspace\goproject\my\demo\.gocache GOMODCACHE=D:\workspace\goproject\my\demo\.gomodcache go test ./...`
+ 结果：成功。后端所有包通过测试阶段编译检查。

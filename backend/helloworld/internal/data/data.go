@@ -5,10 +5,10 @@ import (
 	"log"
 	"os"
 
+	_ "github.com/lib/pq"
 	"helloworld/internal/conf"
 	"helloworld/internal/data/ent"
 	"helloworld/internal/data/ent/migrate"
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/google/wire"
 )
 

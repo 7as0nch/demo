@@ -82,6 +82,7 @@ screenshot
 build
 
 .gocache/
+.gomodcache/
 
 dist/
 .pnpm-store

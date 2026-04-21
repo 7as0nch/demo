@@ -1,11 +1,13 @@
 # Verification
 
 - 状态：已完成
-- 结论：`swagger-ui-dist` 已被显式声明并安装，`backend/helloworld/web` 的构建验证通过，openapi 页面缺依赖导致的报错已修复。
+- 结论：后端已从 MySQL 最小切换为 PostgreSQL，驱动依赖、空白导入和默认 DSN 已全部对齐，`go test ./...` 通过。
 - 已验证项：
-  - `backend/helloworld/web/node_modules/swagger-ui-dist` 存在
-  - `pnpm build` 成功结束
-  - 未再出现 `Can't resolve 'swagger-ui-dist'` 与 `Can't resolve 'swagger-ui-dist/swagger-ui.css'`
+  - `backend/helloworld/go.mod` 已移除 MySQL 驱动并新增 `github.com/lib/pq`
+  - `backend/helloworld/internal/data/data.go` 已切换为 PostgreSQL 驱动导入
+  - `backend/helloworld/configs/config.yaml` 默认数据库配置已切为 `driver: postgres`
+  - `backend/helloworld/go.sum` 已同步 PostgreSQL 驱动校验信息
+  - `go test ./...` 成功结束
 - 残余风险：
-  - 安装阶段仍有较多历史 peer dependency warning，主要来自 React 19、Ant Design 6 与旧生态包版本组合。
-  - `pnpm build` 日志中出现 `tree-shaker ERROR` 文本，但本次未影响退出码与产物输出，建议后续单独评估该打包器日志来源。
+  - 本次未连接真实 PostgreSQL 实例，因此尚未在运行态验证自动建表与 CRUD 实际读写
+  - 为通过当前环境权限限制，验证时使用了工作区内 `.gocache` 和 `.gomodcache`；其中 `.gomodcache` 是本次产生的本地缓存目录

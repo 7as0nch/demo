@@ -1,24 +1,24 @@
 {
-  "task": "修复 backend/helloworld/web 启动时 openapi 页面构建失败的问题",
+  "task": "将 backend/helloworld 从 MySQL 最小切换为 PostgreSQL",
   "affected_area": [
-    "backend/helloworld/web/package.json",
-    "backend/helloworld/web/config/config.ts",
-    "backend/helloworld/web/src/.umi/plugin-openapi/openapi.tsx"
+    "backend/helloworld/go.mod",
+    "backend/helloworld/internal/data/data.go",
+    "backend/helloworld/configs/config.yaml"
   ],
-  "current_behavior": "开发服务器启动时，.umi/plugin-openapi/openapi.tsx 无法解析 swagger-ui-dist 和其样式文件，导致构建中断。",
-  "expected_behavior": "开发服务器能够正常解析 openapi 页面依赖，项目可继续构建并访问 /umi/plugin/openapi。",
+  "current_behavior": "后端默认通过 MySQL 驱动和 MySQL DSN 初始化 Ent 客户端，开发环境启动时会基于当前驱动执行自动建表。",
+  "expected_behavior": "后端默认通过 PostgreSQL 驱动和 PostgreSQL DSN 初始化 Ent 客户端，业务层 CRUD 保持不变，并能通过现有 Ent migration 在开发环境建表。",
   "stack": [
-    "React",
-    "Umi Max",
-    "pnpm"
+    "Go",
+    "Kratos",
+    "Ent",
+    "PostgreSQL"
   ],
   "similar_implementation": [
-    "backend/helloworld/web/config/config.ts 中启用了 openAPI 配置",
-    "backend/helloworld/web/src/app.tsx 中开发环境菜单直接链接到 /umi/plugin/openapi"
+    "backend/helloworld/internal/data/data.go 通过 ent.Open(c.Database.Driver, c.Database.Source) 打开数据库",
+    "backend/helloworld/internal/data/ent/client.go 已支持 dialect.Postgres"
   ],
   "tests": [
-    "在 backend/helloworld/web 下执行 pnpm install --offline",
-    "在 backend/helloworld/web 下执行 pnpm build"
+    "在 backend/helloworld 下执行 go test ./..."
   ],
-  "observation_summary": "swagger-ui-dist 已存在于 pnpm-lock.yaml 中，并且可通过 pnpm why 查到是 openapi 插件的间接依赖，但当前项目 package.json 未显式声明该包，导致生成代码直接 import 时无法稳定解析。"
+  "observation_summary": "当前项目没有手写 MySQL SQL，数据库方言主要绑定在 go.mod 的 MySQL 驱动、data.go 的空白导入和 config.yaml 的默认配置上，因此可以通过最小改动切换到 PostgreSQL。"
 }
